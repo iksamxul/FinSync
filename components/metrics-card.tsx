@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
 import type React from "react"; // Added import for React
+import { cn } from "@/lib/utils";
 
 interface MetricsCardProps {
   title: string;
@@ -11,11 +12,20 @@ interface MetricsCardProps {
     isPositive: boolean;
   };
   chart?: React.ReactNode;
+  className?: string;
 }
 
-export function MetricsCard({ title, value, change, chart }: MetricsCardProps) {
+export function MetricsCard({
+  title,
+  value,
+  change,
+  chart,
+  className,
+}: MetricsCardProps) {
   return (
-    <Card className="p-4 bg-black backdrop-blur">
+    <Card
+      className={cn("p-4 border-gray-800 bg-gray-950 backdrop-blur", className)}
+    >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm text-white">{title}</h3>
         {chart ? <ArrowUpRight className="h-4 w-4 text-white" /> : null}

@@ -3,23 +3,23 @@
 import { Line, LineChart, ResponsiveContainer, Tooltip } from "recharts";
 
 const data = [
-  { date: "Mar", value: 300 },
-  { date: "Apr", value: 350 },
-  { date: "May", value: 200 },
-  { date: "Jun", value: 400 },
-  { date: "Jul", value: 300 },
-  { date: "Aug", value: 200 },
-  { date: "Sep", value: 450 },
-  { date: "Oct", value: 500 },
-  { date: "Nov", value: 480 },
+  { date: "Jan", value: 100 },
+  { date: "Feb", value: 350 },
+  { date: "Mar", value: 200 },
+  { date: "Apr", value: 400 },
+  { date: "May", value: 300 },
+  { date: "Jun", value: 200 },
+  { date: "Jul", value: 450 },
+  { date: "Aug", value: 500 },
+  { date: "Sep", value: 480 },
+  { date: "Oct", value: 400 },
+  { date: "Nov", value: 350 },
   { date: "Dec", value: 400 },
-  { date: "Jan", value: 350 },
-  { date: "Feb", value: 400 },
 ];
 
 export function StatsChart() {
   return (
-    <div className="h-[300px] bg-black w-full">
+    <div className="h-[300px]  w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <Tooltip
@@ -54,7 +54,7 @@ export function StatsChart() {
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#ff6b00"
+            stroke="#04d9ff"
             strokeWidth={2}
             dot={false}
           />

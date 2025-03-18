@@ -1,10 +1,16 @@
-import { Avatar } from "@/components/ui/avatar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { MoreHorizontal } from "lucide-react"
+import { Avatar } from "@/components/ui/avatar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const vaults = [
   {
-    name: "Bitcoin",
+    name: "ADNOC",
     symbol: "BTC",
     price: "$13,643.21",
     daily: "+$213.8",
@@ -12,10 +18,10 @@ const vaults = [
     apy: "8.56%",
     state: "Fixed",
     startDate: "05.10.2023",
-    liquidity: "high",
+    liquidity: "low",
   },
   {
-    name: "USDT",
+    name: "Chips Oman",
     symbol: "USDT",
     price: "$1.00",
     daily: "+$45.1",
@@ -26,7 +32,7 @@ const vaults = [
     liquidity: "medium",
   },
   {
-    name: "Ethereum",
+    name: "RTA",
     symbol: "ETH",
     price: "$2,123.87",
     daily: "+$13.5",
@@ -36,71 +42,85 @@ const vaults = [
     startDate: "21.01.2023",
     liquidity: "low",
   },
-]
+];
 
 export function VaultTable() {
   return (
     <Table>
       <TableHeader>
-        <TableRow>
-          <TableHead>Vault</TableHead>
-          <TableHead>Daily</TableHead>
-          <TableHead>Balance ↓</TableHead>
-          <TableHead>APY ↓</TableHead>
-          <TableHead>State</TableHead>
-          <TableHead>Start date</TableHead>
-          <TableHead>Liquidity</TableHead>
-          <TableHead></TableHead>
+        <TableRow className="hover:bg-transparent">
+          <TableHead className="text-gray-400">Name</TableHead>
+          <TableHead className="text-gray-400">Cashflow</TableHead>
+          <TableHead className="text-gray-400">Balance</TableHead>
+          <TableHead className="text-gray-400">Date</TableHead>
+          <TableHead className="text-gray-400">Rating</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {vaults.map((vault) => (
-          <TableRow key={vault.symbol}>
+        {vaults.map((vault, index) => (
+          <TableRow
+            key={vault.symbol}
+            className="transition-all hover:bg-gray-800/50 cursor-pointer"
+            style={{
+              animation: `fadeIn 0.5s ease-out ${index * 0.1}s`,
+            }}
+          >
             <TableCell className="font-medium">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
-                  <img src={`/placeholder.svg?height=24&width=24`} alt={vault.name} />
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10 rounded-xl border border-gray-700 p-1">
+                  <img
+                    src={`/placeholder.svg?height=32&width=32`}
+                    alt={vault.name}
+                    className="rounded-lg"
+                  />
                 </Avatar>
                 <div>
-                  <div className="font-medium">{vault.name}</div>
-                  <div className="text-xs text-muted-foreground">{vault.price}</div>
+                  <div className="font-semibold text-gray-100">
+                    {vault.name}
+                  </div>
+                  <div className="text-sm text-gray-500">{vault.price}</div>
                 </div>
               </div>
             </TableCell>
-            <TableCell className="text-green-500">{vault.daily}</TableCell>
-            <TableCell>{vault.balance}</TableCell>
-            <TableCell>{vault.apy}</TableCell>
             <TableCell>
-              <span
-                className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${
-                  vault.state === "Fixed" ? "bg-yellow-500/10 text-yellow-500" : "bg-green-500/10 text-green-500"
-                }`}
-              >
-                {vault.state}
+              <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-500">
+                {vault.daily}
               </span>
             </TableCell>
-            <TableCell>{vault.startDate}</TableCell>
             <TableCell>
-              <div className="flex gap-1">
+              <span className="font-semibold">{vault.balance}</span>
+            </TableCell>
+            <TableCell>
+              <span className="text-gray-400">{vault.startDate}</span>
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-1.5">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1.5 w-3 rounded-full ${
-                      i < (vault.liquidity === "high" ? 3 : vault.liquidity === "medium" ? 2 : 1)
-                        ? "bg-primary"
-                        : "bg-muted"
+                    className={`h-2 w-4 rounded-full transition-all ${
+                      i <
+                      (vault.liquidity === "high"
+                        ? 3
+                        : vault.liquidity === "medium"
+                        ? 2
+                        : 1)
+                        ? "bg-orange-500/80"
+                        : "bg-gray-700"
                     }`}
                   />
                 ))}
               </div>
             </TableCell>
-            <TableCell>
-              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-            </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }
 
+// Add this CSS somewhere in your global styles
+// @keyframes fadeIn {
+//   from { opacity: 0; transform: translateY(10px); }
+//   to { opacity: 1; transform: translateY(0); }
+// }
