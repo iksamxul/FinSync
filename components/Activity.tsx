@@ -7,10 +7,10 @@ const Activity = () => {
     <div className="mt-6 px-8 lg:px-20 pt-12">
       <div className="mb-10">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">
-          Active Vaults
+          Recent Acitivities
         </h1>
         <p className="text-gray-400 mt-2 flex items-center gap-2">
-          Monitor your active vault performances
+          Monitor your latest spendings
           <MoveUpRight className="w-4 h-4" />
         </p>
       </div>

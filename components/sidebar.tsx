@@ -5,13 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import {
-  BarChart3,
-  ChevronDown,
-  Globe,
-  Home,
   LayoutDashboard,
-  LifeBuoy,
-  Settings,
   Wallet,
   Flame,
   User2,
@@ -67,18 +61,20 @@ const Sidebar = () => {
         </Link>
 
         <div className="mt-auto px-2 pt-5 py-4">
-          <div className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-3 border border-purple-500/20">
-            <div className="relative">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                <User2 className="h-5 w-5 text-white" />
+          <Link href="/profile">
+            <div className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-3 border border-purple-500/20">
+              <div className="relative">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+                  <User2 className="h-5 w-5 text-white" />
+                </div>
+                <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-black" />
               </div>
-              <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-black" />
+              <div className="flex flex-col">
+                <span className="font-medium">John Doe</span>
+                <span className="text-xs text-gray-400">Pro Member</span>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="font-medium">John Doe</span>
-              <span className="text-xs text-gray-400">Pro Member</span>
-            </div>
-          </div>
+          </Link>
         </div>
       </nav>
     </aside>

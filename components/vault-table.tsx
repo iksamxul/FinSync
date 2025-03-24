@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar } from "@/components/ui/avatar";
 import {
   Table,
@@ -7,59 +9,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const vaults = [
-  {
-    name: "ADNOC",
-    symbol: "BTC",
-    price: "$13,643.21",
-    daily: "+$213.8",
-    balance: "$13,954.04",
-    apy: "8.56%",
-    state: "Fixed",
-    startDate: "05.10.2023",
-    liquidity: "low",
-  },
-  {
-    name: "Chips Oman",
-    symbol: "USDT",
-    price: "$1.00",
-    daily: "+$45.1",
-    balance: "$3,954.04",
-    apy: "5.44%",
-    state: "Fixed",
-    startDate: "12.03.2023",
-    liquidity: "medium",
-  },
-  {
-    name: "RTA",
-    symbol: "ETH",
-    price: "$2,123.87",
-    daily: "+$13.5",
-    balance: "$3,954.04",
-    apy: "4.12%",
-    state: "Flexible",
-    startDate: "21.01.2023",
-    liquidity: "low",
-  },
-];
+import { useFinancial } from "@/contexts/FinancialContext";
 
 export function VaultTable() {
+  const { profile, isLoading } = useFinancial();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!profile) return <div>No data available</div>;
+
   return (
     <Table>
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className="text-gray-400">Name</TableHead>
-          <TableHead className="text-gray-400">Cashflow</TableHead>
-          <TableHead className="text-gray-400">Balance</TableHead>
+          <TableHead className="text-gray-400">Category</TableHead>
+          <TableHead className="text-gray-400">Description</TableHead>
+          <TableHead className="text-gray-400">Amount</TableHead>
           <TableHead className="text-gray-400">Date</TableHead>
-          <TableHead className="text-gray-400">Rating</TableHead>
+          <TableHead className="text-gray-400">Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {vaults.map((vault, index) => (
+        {profile.transactions.map((transaction, index) => (
           <TableRow
-            key={vault.symbol}
+            key={transaction.id}
             className="transition-all hover:bg-gray-800/50 cursor-pointer"
             style={{
               animation: `fadeIn 0.5s ease-out ${index * 0.1}s`,
@@ -68,48 +40,42 @@ export function VaultTable() {
             <TableCell className="font-medium">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10 rounded-xl border border-gray-700 p-1">
-                  <img
-                    src={`/placeholder.svg?height=32&width=32`}
-                    alt={vault.name}
-                    className="rounded-lg"
-                  />
+                  <div className="h-full w-full rounded-lg bg-gray-800 flex items-center justify-center">
+                    <span className="text-lg capitalize">
+                      {transaction.category[0]}
+                    </span>
+                  </div>
                 </Avatar>
                 <div>
-                  <div className="font-semibold text-gray-100">
-                    {vault.name}
+                  <div className="font-semibold text-gray-100 capitalize">
+                    {transaction.category}
                   </div>
-                  <div className="text-sm text-gray-500">{vault.price}</div>
                 </div>
               </div>
             </TableCell>
             <TableCell>
-              <span className="px-3 py-1 rounded-full bg-green-500/10 text-green-500">
-                {vault.daily}
+              <span className="text-gray-300">{transaction.description}</span>
+            </TableCell>
+            <TableCell>
+              <span
+                className={`font-semibold ${
+                  transaction.type === "income"
+                    ? "text-green-400"
+                    : "text-red-400"
+                }`}
+              >
+                {transaction.type === "income" ? "+" : "-"}$
+                {transaction.amount.toFixed(2)}
               </span>
             </TableCell>
             <TableCell>
-              <span className="font-semibold">{vault.balance}</span>
-            </TableCell>
-            <TableCell>
-              <span className="text-gray-400">{vault.startDate}</span>
+              <span className="text-gray-400">{transaction.date}</span>
             </TableCell>
             <TableCell>
               <div className="flex gap-1.5">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={`h-2 w-4 rounded-full transition-all ${
-                      i <
-                      (vault.liquidity === "high"
-                        ? 3
-                        : vault.liquidity === "medium"
-                        ? 2
-                        : 1)
-                        ? "bg-orange-500/80"
-                        : "bg-gray-700"
-                    }`}
-                  />
-                ))}
+                <span className="px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs">
+                  Completed
+                </span>
               </div>
             </TableCell>
           </TableRow>
@@ -118,9 +84,3 @@ export function VaultTable() {
     </Table>
   );
 }
-
-// Add this CSS somewhere in your global styles
-// @keyframes fadeIn {
-//   from { opacity: 0; transform: translateY(10px); }
-//   to { opacity: 1; transform: translateY(0); }
-// }

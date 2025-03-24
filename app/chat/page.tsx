@@ -10,20 +10,74 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { userFinancialData, analyzeSpending } from "@/lib/financial-data";
+import { analyzeSpending } from "@/lib/financial-data";
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/sidebar";
+import { useFinancial } from "@/contexts/FinancialContext";
 
 export default function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat();
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading: isChatLoading,
+  } = useChat();
+  const { profile, isLoading } = useFinancial();
   const [analysis, setAnalysis] = useState<any>(null);
 
   useEffect(() => {
-    // Analyze spending when component mounts
-    const spendingAnalysis = analyzeSpending(userFinancialData);
-    setAnalysis(spendingAnalysis);
-  }, []);
+    if (profile) {
+      const spendingAnalysis = analyzeSpending(profile);
+      setAnalysis(spendingAnalysis);
+    }
+  }, [profile]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!profile) return <div>No data available</div>;
+
+  // Add this function to convert markdown bold to HTML
+  const convertBoldText = (text: string) => {
+    // Add color coding for transaction types
+    text = text.replace(
+      /Income:/g,
+      '<span class="text-green-400">Income:</span>'
+    );
+    text = text.replace(
+      /Expense:/g,
+      '<span class="text-red-400">Expense:</span>'
+    );
+
+    // Add color coding for common categories
+    text = text.replace(/Salary/g, '<span class="text-blue-400">Salary</span>');
+    text = text.replace(/Rent/g, '<span class="text-purple-400">Rent</span>');
+    text = text.replace(
+      /Groceries/g,
+      '<span class="text-yellow-400">Groceries</span>'
+    );
+    text = text.replace(
+      /Utilities/g,
+      '<span class="text-orange-400">Utilities</span>'
+    );
+    text = text.replace(
+      /Shopping/g,
+      '<span class="text-pink-400">Shopping</span>'
+    );
+    text = text.replace(/Dining/g, '<span class="text-cyan-400">Dining</span>');
+
+    // Add icons for transaction types
+    text = text.replace(/\$([\d,]+\.\d{2})/g, (match) => {
+      if (text.includes("Income:")) {
+        return `<span class="text-green-400">↗️ ${match}</span>`;
+      } else if (text.includes("Expense:")) {
+        return `<span class="text-red-400">↘️ ${match}</span>`;
+      }
+      return match;
+    });
+
+    // Convert bold text
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
@@ -34,10 +88,10 @@ export default function ChatInterface() {
           <main className="px-8 lg:px-20 pt-12">
             <div className="mb-10">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-300 to-gray-500 bg-clip-text text-transparent">
-                AI Assistant
+                Ask Fin
               </h1>
               <p className="text-gray-400 mt-2">
-                Get insights about your financial data
+                Ask fin for insights financial data and advice
               </p>
             </div>
 
@@ -79,7 +133,7 @@ export default function ChatInterface() {
                             : "Off Track"}
                         </p>
                         <p className="text-gray-400 text-sm">
-                          Goal: ${userFinancialData.savingsGoal}
+                          Goal: ${profile.savingsGoal}
                         </p>
                       </div>
 
@@ -112,15 +166,13 @@ export default function ChatInterface() {
 
             <Card className="w-full bg-gray-900/50 backdrop-blur-sm border border-gray-800">
               <CardHeader className="border-b border-gray-700">
-                <CardTitle className="text-gray-100">
-                  Financial Assistant
-                </CardTitle>
+                <CardTitle className="text-gray-100">Ask Fin</CardTitle>
               </CardHeader>
               <CardContent className="h-[50vh] overflow-y-auto p-4 space-y-4">
                 {messages.length === 0 ? (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-gray-400">
-                      Ask me about your finances or for spending advice...
+                      💬 Ask me about your finances or for spending advice...
                     </p>
                   </div>
                 ) : (
@@ -134,13 +186,21 @@ export default function ChatInterface() {
                       }`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                        className={`max-w-[80%] rounded-lg px-4 py-2 [&_strong]:font-extrabold [&_strong]:text-white [&_p]:leading-relaxed ${
                           message.role === "user"
                             ? "bg-blue-600 text-white"
-                            : "bg-gray-700 text-gray-200"
+                            : "bg-gray-700/70 text-gray-100 backdrop-blur-sm"
                         }`}
                       >
-                        {message.content}
+                        {message.content.split("\n\n").map((paragraph, i) => (
+                          <p
+                            key={i}
+                            className="mb-2 last:mb-0"
+                            dangerouslySetInnerHTML={{
+                              __html: convertBoldText(paragraph),
+                            }}
+                          />
+                        ))}
                       </div>
                     </div>
                   ))
@@ -153,14 +213,14 @@ export default function ChatInterface() {
                     onChange={handleInputChange}
                     placeholder="Ask about your finances..."
                     className="flex-grow bg-gray-700 text-gray-100 border-gray-600"
-                    disabled={isLoading}
+                    disabled={isChatLoading}
                   />
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isChatLoading}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    {isLoading ? "Sending..." : "Send"}
+                    {isChatLoading ? "Sending..." : "Send"}
                   </Button>
                 </form>
               </CardFooter>

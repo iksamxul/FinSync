@@ -1,11 +1,27 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+"use client";
+
+import Sidebar from "@/components/sidebar";
 import { MetricsCard } from "@/components/metrics-card";
 import { StatsChart } from "@/components/stats-chart";
 import { VaultTable } from "@/components/vault-table";
-import Sidebar from "@/components/sidebar";
+import { useFinancial } from "@/contexts/FinancialContext";
+import { analyzeSpending } from "@/lib/financial-data";
+import { useEffect, useState } from "react";
 
 export default function Page() {
+  const { profile, isLoading } = useFinancial();
+  const [analysis, setAnalysis] = useState<any>(null);
+
+  useEffect(() => {
+    if (profile) {
+      const spendingAnalysis = analyzeSpending(profile);
+      setAnalysis(spendingAnalysis);
+    }
+  }, [profile]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!profile) return <div>No data available</div>;
+
   return (
     <div className="min-h-screen pb-20 bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
       <div className="grid lg:grid-cols-[280px_1fr]">
@@ -23,78 +39,53 @@ export default function Page() {
             <div className="grid gap-6 md:grid-cols-3">
               <MetricsCard
                 className="bg-gray-900/50 backdrop-blur-sm border border-gray-800"
-                title="Your Balance"
-                value="$74,892"
+                title="Monthly Spending"
+                value={
+                  analysis ? `$${analysis.totalSpent.toFixed(2)}` : "Loading..."
+                }
                 change={{
-                  value: "$1,340",
-                  percentage: "-2.1%",
+                  value: analysis
+                    ? `${analysis.percentOfIncome.toFixed(1)}% of income`
+                    : "",
+                  percentage: "",
                   isPositive: false,
                 }}
               />
               <MetricsCard
                 className="bg-gray-900/50 backdrop-blur-sm border border-gray-800"
-                title="Your Deposits"
-                value="$54,892"
+                title="Savings Status"
+                value={
+                  analysis
+                    ? `$${analysis.remainingIncome.toFixed(2)}`
+                    : "Loading..."
+                }
                 change={{
-                  value: "$1,340",
-                  percentage: "+13.2%",
-                  isPositive: true,
+                  value: `Goal: $${profile.savingsGoal}`,
+                  percentage: analysis
+                    ? analysis.onTrackForSavings
+                      ? "On Track"
+                      : "Off Track"
+                    : "",
+                  isPositive: analysis ? analysis.onTrackForSavings : false,
                 }}
               />
               <MetricsCard
                 className="bg-gray-900/50 backdrop-blur-sm border border-gray-800"
-                title="Accrued Yield"
-                value="$20,892"
+                title="Total Balance"
+                value={`$${profile.totalBalance.toFixed(2)}`}
                 change={{
-                  value: "$1,340",
-                  percentage: "+1.2%",
+                  value: "Available Balance",
+                  percentage: "Total Assets",
                   isPositive: true,
                 }}
               />
             </div>
 
             <div className="mt-8 rounded-2xl bg-gray-900/50 p-6 backdrop-blur-sm border border-gray-800">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-xl font-semibold  text-white">
-                  General Statistics
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold text-white">
+                  Visualise Spending
                 </h2>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-gray-400 hover:text-white hover:bg-gray-800"
-                  >
-                    Today
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-gray-400 hover:text-white hover:bg-gray-800"
-                  >
-                    Last week
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-gray-400 hover:text-white hover:bg-gray-800"
-                  >
-                    Last month
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-gray-400 hover:text-white hover:bg-gray-800"
-                  >
-                    Last 6 month
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-gray-400 hover:text-white hover:bg-gray-800"
-                  >
-                    Year
-                  </Button>
-                </div>
               </div>
               <StatsChart />
             </div>
