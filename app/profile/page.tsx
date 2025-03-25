@@ -13,19 +13,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ProfileError } from "@/lib/services/profiles";
+import { toast } from "sonner"; // Change import to use sonner directly
 
 export default function ProfilePage() {
-  const { profile, isLoading } = useFinancial();
+  const { profile, isLoading, updateProfile } = useFinancial();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedIncome, setEditedIncome] = useState("");
+  const [editedSavingsGoal, setEditedSavingsGoal] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  const processData = (transactions: Transaction[]) => {
-    // Type is now properly defined
-    return transactions.reduce((acc, transaction) => {
-      // ...existing processing logic...
-    }, {});
+  const handleSave = async () => {
+    if (!profile) return;
+
+    try {
+      setError(null);
+      await updateProfile({
+        monthlyIncome: Number(editedIncome) || profile.monthlyIncome,
+        savingsGoal: Number(editedSavingsGoal) || profile.savingsGoal,
+      });
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    } catch (err) {
+      const message =
+        err instanceof ProfileError
+          ? err.message
+          : "An unexpected error occurred";
+      toast.error(message);
+      console.error("Profile update failed:", err);
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
   if (!profile) return <div>No data available</div>;
+
+  // Add error display to the UI
+  if (error) {
+    return <div className="text-red-500 mb-4">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
@@ -44,10 +69,26 @@ export default function ProfilePage() {
             <div className="grid gap-6">
               {/* Profile Information Card */}
               <Card className="bg-gray-900/50 backdrop-blur-sm border border-gray-800">
-                <CardHeader className="border-b border-gray-700">
+                <CardHeader className="border-b border-gray-700 flex flex-row justify-between items-center">
                   <CardTitle className="text-gray-100">
                     Personal Information
                   </CardTitle>
+                  <button
+                    onClick={() => {
+                      if (isEditing) {
+                        handleSave();
+                      } else {
+                        setEditedIncome(profile.monthlyIncome.toString());
+                        setEditedSavingsGoal(
+                          profile.savingsGoal?.toString() || "0"
+                        );
+                        setIsEditing(true);
+                      }
+                    }}
+                    className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 rounded-md"
+                  >
+                    {isEditing ? "Save" : "Edit"}
+                  </button>
                 </CardHeader>
                 <CardContent className="p-6 grid gap-6">
                   <div className="grid md:grid-cols-2 gap-6">
@@ -74,9 +115,35 @@ export default function ProfilePage() {
                       <label className="text-sm text-gray-400">
                         Monthly Income
                       </label>
-                      <p className="text-lg font-semibold text-white mt-1">
-                        ${profile.monthlyIncome}
-                      </p>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          value={editedIncome}
+                          onChange={(e) => setEditedIncome(e.target.value)}
+                          className="w-full mt-1 bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white"
+                        />
+                      ) : (
+                        <p className="text-lg font-semibold text-white mt-1">
+                          ${profile.monthlyIncome}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-400">
+                        Savings Goal
+                      </label>
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          value={editedSavingsGoal}
+                          onChange={(e) => setEditedSavingsGoal(e.target.value)}
+                          className="w-full mt-1 bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white"
+                        />
+                      ) : (
+                        <p className="text-lg font-semibold text-white mt-1">
+                          ${profile.savingsGoal || 0}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </CardContent>

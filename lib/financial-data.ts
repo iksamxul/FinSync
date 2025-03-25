@@ -1,17 +1,18 @@
 // Types only
-export type Transaction = {
-    id: string
-    date: string
-    amount: number
-    category: string
-    description: string
-    type: 'income' | 'expense'
+export interface Transaction {
+  id: string;
+  date: string;
+  amount: number;
+  category: string;
+  description: string;
+  type: 'income' | 'expense';
+  user_id: string;
 }
 
-export type MonthlyStats = {
-  date: string
-  earnings: number
-  spendings: number
+export interface MonthlyStats {
+  date: string;
+  earnings: number;
+  spendings: number;
 }
 
 export type FinancialProfile = {
@@ -38,7 +39,8 @@ export const userFinancialData: FinancialProfile = {
       amount: 5000.0,
       category: "salary",
       description: "Monthly Salary",
-      type: "income" as const
+      type: "income" as const,
+      user_id: "user123"
     }
   ],
   monthlyStats: [

@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
-import type React from "react"; // Import React
 import { FinancialProvider } from "@/contexts/FinancialContext";
+import { Toaster } from "sonner"; // Change import to use sonner directly
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,6 +14,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <FinancialProvider>{children}</FinancialProvider>
+        <Toaster />
       </body>
     </html>
   );
