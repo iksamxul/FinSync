@@ -1,0 +1,32 @@
+date,amount,category,description,type,user_id
+2024-03-01,5000.00,salary,"Monthly Salary",income,user123
+2024-03-02,250.00,dividend,"Stock dividends",income,user123
+2024-03-01,1200.00,rent,"Monthly rent",expense,user123
+2024-03-15,120.50,groceries,"Weekly grocery shopping",expense,user123
+2024-03-14,45.00,dining,"Dinner at Italian restaurant",expense,user123
+2024-03-12,9.99,subscription,"Streaming service",expense,user123
+2024-03-10,65.30,utilities,"Electricity bill",expense,user123
+2024-03-08,35.00,dining,"Lunch with colleagues",expense,user123
+2024-03-05,150.00,shopping,"New clothes",expense,user123
+2024-02-01,5000.00,salary,"Monthly Salary",income,user123
+2024-02-15,300.00,freelance,"Web development project",income,user123
+2024-01-01,5000.00,salary,"Monthly Salary",income,user123
+2024-01-15,200.00,dividend,"Stock dividends",income,user123
+2023-12-01,5000.00,salary,"Monthly Salary",income,user123
+2023-12-25,500.00,shopping,"Christmas shopping",expense,user123
+2023-11-01,5000.00,salary,"Monthly Salary",income,user123
+2023-11-15,350.00,freelance,"Website project",income,user123
+2023-10-01,5000.00,salary,"Monthly Salary",income,user123
+2023-10-10,7500.00,rent,"Monthly rent",expense,user123
+2023-09-01,5000.00,salary,"Monthly Salary",income,user123
+2023-09-20,1000.00,bonus,"Performance bonus",income,user123
+2023-08-01,5000.00,salary,"Monthly Salary",income,user123
+2023-08-15,400.00,utilities,"Electricity and water",expense,user123
+2023-07-01,5000.00,salary,"Monthly Salary",income,user123
+2023-07-05,300.00,dividend,"Stock dividends",income,user123
+2023-06-01,5000.00,salary,"Monthly Salary",income,user123
+2023-06-15,600.00,shopping,"Electronics",expense,user123
+2023-05-01,5000.00,salary,"Monthly Salary",income,user123
+2023-05-20,450.00,freelance,"Consulting work",income,user123
+2023-04-01,5000.00,salary,"Monthly Salary",income,user123
+2023-04-10,800.00,rent,"Monthly rent",expense,user123
